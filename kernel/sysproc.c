@@ -81,6 +81,28 @@ int
 sys_pgaccess(void)
 {
   // lab pgtbl: your code here.
+  // Hang Zhang: implement the pgaccess
+  uint64 addr;
+  int n;
+  uint64 mask_addr;
+
+  if(argaddr(0, &addr) < 0 || argint(1, &n) < 0 || argaddr(2, &mask_addr) < 0)
+    return -1;
+  if(n>32 || n<0)return -1;
+  
+  uint res = 0;
+  struct proc *p = myproc();
+
+  for(int i = 0; i < n; i++){
+    uint64 va = addr + i * PGSIZE;
+    int abit = vm_pgaccess(p->pagetable, va);
+    res = res | (abit << i);
+  }
+
+  if(copyout(p->pagetable, mask_addr, (char*)&res, sizeof(res))<0){
+    return -1;
+  }
+
   return 0;
 }
 #endif
