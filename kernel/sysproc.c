@@ -70,6 +70,8 @@ sys_sleep(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
+  // Hang Zhang: Add backtrace() here for bttest
+  backtrace();
   return 0;
 }
 
